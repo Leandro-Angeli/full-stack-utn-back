@@ -7,6 +7,7 @@ app.use(cors());
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
 require('./config/db');
 // app.get('/', (req, res) => {
 // 	res.send('ok');
@@ -17,6 +18,8 @@ require('./config/db');
 // 	res.json(user);
 // });
 app.use('/users', userRoutes);
+app.use('/products', productRoutes);
+
 app.listen(process.env.PORT, () => {
 	console.log('running on port', process.env.PORT);
 });
