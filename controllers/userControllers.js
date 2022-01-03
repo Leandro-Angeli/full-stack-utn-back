@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-
+const jwt = require('jsonwebtoken');
 //async error handling working
 const getUser = async (req, res) => {
 	try {
@@ -62,9 +62,13 @@ const loginUser = async (req, res) => {
 		console.log(user.password);
 		console.log(password);
 		if (isMatch) {
-			res.json({ msg: 'bienvenido' });
+			const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+				expiresIn: 60 * 60,
+			});
+			console.log(token);
+			res.json({ usuario: user, token: token });
 		} else {
-			res.json({ error: 'datos incorrectos' });
+			res.json({ error: 'datos incorrectos', token: 'null' });
 		}
 	}
 };
