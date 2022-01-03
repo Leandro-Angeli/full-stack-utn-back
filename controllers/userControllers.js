@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+
 //async error handling working
 const getUser = async (req, res) => {
 	try {
@@ -25,17 +27,47 @@ const getUser = async (req, res) => {
 // 		});
 // };
 //then not workin error handling
+
+//POST REQUEST
+const saltRounds = 10;
 const postUser = (req, res) => {
 	const { name, password, email } = req.body;
 
-	let newUser = new User({
-		name,
-		password,
-		email,
+	bcrypt.genSalt(saltRounds, function (err, salt) {
+		bcrypt.hash(password, salt, function (err, hash) {
+			if (err) {
+				res.json({ err: 'error en la encriptacion' });
+			} else {
+				let newUser = new User({
+					name,
+					password: hash,
+					email,
+				});
+				newUser
+					.save()
+					.then(() => res.json({ msg: `nuevo usuario ${newUser}` }))
+					.catch((err) => res.status(400).json({ Error: err }));
+			}
+		});
 	});
-	newUser
-		.save()
-		.then(() => res.json({ msg: `nuevo usuario ${newUser}` }))
-		.catch((err) => res.status(400).json({ Error: err }));
 };
-module.exports = { getUser, postUser };
+const loginUser = async (req, res) => {
+	const { password, email } = req.body;
+
+	const user = await User.findOne({ email });
+	if (!user) {
+		res.json({ error: 'usuario no encontrado' });
+	} else {
+		const isMatch = await bcrypt.compare(password, user.password);
+		console.log(user.password);
+		console.log(password);
+		if (isMatch) {
+			res.json({ msg: 'bienvenido' });
+		} else {
+			res.json({ error: 'datos incorrectos' });
+		}
+	}
+};
+
+//POST REQUEST
+module.exports = { getUser, postUser, loginUser };

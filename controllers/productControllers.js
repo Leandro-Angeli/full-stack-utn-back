@@ -17,6 +17,13 @@ const getProductById = (req, res) => {
 		.then((data) => res.json(data))
 		.catch((err) => res.json({ error: 'producto no encontrado' }));
 };
+const searchProduct = (req, res) => {
+	const { category, name } = req.params;
+	// res.json(req.params);
+	Product.find({ category, name })
+		.then((data) => res.json(data))
+		.catch((err) => res.json({ error: 'producto no encontrado' }));
+};
 //get products
 // post products
 const postProduct = (req, res) => {
@@ -40,4 +47,5 @@ module.exports = {
 	postProduct,
 	getProductsByCategory,
 	getProductById,
+	searchProduct,
 };
