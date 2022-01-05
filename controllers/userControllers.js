@@ -59,19 +59,30 @@ const loginUser = async (req, res) => {
 		res.json({ error: 'usuario no encontrado' });
 	} else {
 		const isMatch = await bcrypt.compare(password, user.password);
-		console.log(user.password);
-		console.log(password);
+		// console.log(user.password);
+		// console.log(password);
 		if (isMatch) {
 			const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
 				expiresIn: 60 * 60,
 			});
-			console.log(token);
+			// console.log(token);
+			//RES COOKI GOES FIRST THEN RES.JSON//
+			res.cookie('jwt', token, {
+				expires: new Date(Date.now() + 60000),
+				// secure:true,
+				// httpOnly:true
+			});
 			res.json({ usuario: user, token: token });
+			//RES COOKI GOES FIRST THEN RES.JSON//
 		} else {
 			res.json({ error: 'datos incorrectos', token: 'null' });
 		}
 	}
 };
+const logOutUser = async (req, res) => {
+	res.clearCookie('jwt');
+	res.json({ msg: 'logout' });
+};
 
 //POST REQUEST
-module.exports = { getUser, postUser, loginUser };
+module.exports = { getUser, postUser, loginUser, logOutUser };
