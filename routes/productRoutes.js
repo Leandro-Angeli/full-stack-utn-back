@@ -17,9 +17,14 @@ const {
 	getProductById,
 	searchProduct,
 	getCategories,
+	searchProductsByCategory,
 } = require('../controllers/productControllers');
 userRoutes.get('/', getProducts);
 userRoutes.get('/categories/product', getProductsByCategory);
+userRoutes.get(
+	'/categories/product/search/:category',
+	searchProductsByCategory
+);
 userRoutes.get('/categories', getCategories);
 userRoutes.get('/product/:id', getProductById);
 userRoutes.post('/', upload.single('image'), postProduct);

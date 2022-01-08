@@ -31,24 +31,33 @@ const getUser = async (req, res) => {
 //POST REQUEST
 const saltRounds = 10;
 const postUser = (req, res) => {
-	const { name, password, email } = req.body;
-
-	bcrypt.genSalt(saltRounds, function (err, salt) {
-		bcrypt.hash(password, salt, function (err, hash) {
-			if (err) {
-				res.json({ err: 'error en la encriptacion' });
-			} else {
-				let newUser = new User({
-					name,
-					password: hash,
-					email,
+	const { name, password, email, last_name, phone } = req.body;
+	User.findOne({ email }).then((user) => {
+		if (user) {
+			res.status(500).json({ error: 'ya existe usuario' });
+		} else {
+			bcrypt.genSalt(saltRounds, function (err, salt) {
+				bcrypt.hash(password, salt, function (err, hash) {
+					if (err) {
+						res.status(500).json({ err: 'error en la encriptacion' });
+					} else {
+						let newUser = new User({
+							name,
+							password: hash,
+							email,
+							last_name,
+							phone,
+						});
+						newUser
+							.save()
+							.then(() =>
+								res.status(200).json({ msg: `nuevo usuario ${newUser}` })
+							)
+							.catch((err) => res.status(400).json({ Error: err }));
+					}
 				});
-				newUser
-					.save()
-					.then(() => res.json({ msg: `nuevo usuario ${newUser}` }))
-					.catch((err) => res.status(400).json({ Error: err }));
-			}
-		});
+			});
+		}
 	});
 };
 const loginUser = async (req, res) => {
