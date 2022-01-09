@@ -96,4 +96,14 @@ const logOutUser = async (req, res) => {
 };
 
 //POST REQUEST
-module.exports = { getUser, postUser, loginUser, logOutUser };
+
+//deleteUser
+const deleteUser = (req, res) => {
+	User.findByIdAndDelete(req.params.id)
+		.then((data) => {
+			res.json({ msg: `usuario ${data.name} ${data.last_name}  eliminado` });
+		})
+		.catch((err) => res.json({ error: 'ha ocurrido un error' }));
+};
+//deleteUser
+module.exports = { getUser, postUser, loginUser, logOutUser, deleteUser };
