@@ -49,27 +49,27 @@ const searchProductsByCategory = (req, res) => {
 };
 //get products
 // post products
+const deleteProduct = (req, res) => {
+	const id = req.body.id;
+	Product.findByIdAndDelete(id)
+		.then((res) => console.log('ok'), res.json({ msg: 'producto eliminado' }))
+		.catch(
+			(err) => console.log('error'),
+			res.json({ error: ' ha ocurrido un error' })
+		);
+};
 
-//multer settings
-// const storage = multer.diskStorage({
-// 	destination: (req, file, callback) => {
-// 		callback(null, '../front/public/uploads');
-// 	},
-// 	filename: (req, file, callback) => {
-// 		callback(null, file.originalname);
-// 	},
-// });
-
-//multer settings
-//multer test
 const postProduct = (req, res, next) => {
-	const { name, description, price, img, category } = req.body;
-	console.log(req.file);
+	const { name, description, price, category } = req.body;
+
+	console.log(req.body), console.log(req.file);
+	img = req.file.originalname;
+	console.log('replaced', img.replace(/"&nbsp"/g, '_'));
 	let newProduct = new Product({
 		name,
 		description,
 		price,
-		img: req.file.filename,
+		img,
 		category,
 	});
 	const extensionFile = req.file.mimetype.split('/')[1];
@@ -84,12 +84,12 @@ const postProduct = (req, res, next) => {
 	} else {
 		newProduct
 			.save()
-			.then(() =>
+			.then(() => {
 				res.json({
 					msg: `nuevo producto  ${newProduct}`,
 					req: { body: req.body, files: req.file },
-				})
-			)
+				});
+			})
 			.catch((err) => res.status(400).json({ Error: 'error' }));
 	}
 };
@@ -118,4 +118,5 @@ module.exports = {
 	searchProduct,
 	getCategories,
 	searchProductsByCategory,
+	deleteProduct,
 };

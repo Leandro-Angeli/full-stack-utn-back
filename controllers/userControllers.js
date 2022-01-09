@@ -34,12 +34,12 @@ const postUser = (req, res) => {
 	const { name, password, email, last_name, phone } = req.body;
 	User.findOne({ email }).then((user) => {
 		if (user) {
-			res.status(500).json({ error: 'ya existe usuario' });
+			res.status(400).json({ msg: 'ya existe usuario' });
 		} else {
 			bcrypt.genSalt(saltRounds, function (err, salt) {
 				bcrypt.hash(password, salt, function (err, hash) {
 					if (err) {
-						res.status(500).json({ err: 'error en la encriptacion' });
+						res.status(400).json({ err: 'error en la encriptacion' });
 					} else {
 						let newUser = new User({
 							name,
@@ -51,7 +51,9 @@ const postUser = (req, res) => {
 						newUser
 							.save()
 							.then(() =>
-								res.status(200).json({ msg: `nuevo usuario ${newUser}` })
+								res.status(200).json({
+									msg: `nuevo usuario ${newUser.name} ${newUser.last_name} agregado`,
+								})
 							)
 							.catch((err) => res.status(400).json({ Error: err }));
 					}
