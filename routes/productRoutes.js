@@ -1,14 +1,5 @@
 const express = require('express');
-const multer = require('multer');
-const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		cb(null, '../front/public/assets/products_img');
-	},
-	filename: (req, file, cb) => {
-		cb(null, file.originalname.replace(/\s/g, '_'));
-	},
-});
-const upload = multer({ storage });
+
 const userRoutes = express.Router();
 const {
 	getProducts,
@@ -19,7 +10,9 @@ const {
 	getCategories,
 	searchProductsByCategory,
 	deleteProduct,
+	updateProduct,
 } = require('../controllers/productControllers');
+const upload = require('../multer/multerFunction');
 userRoutes.get('/', getProducts);
 userRoutes.get('/categories/product', getProductsByCategory);
 userRoutes.get(
@@ -29,6 +22,7 @@ userRoutes.get(
 userRoutes.get('/categories', getCategories);
 userRoutes.get('/product/:id', getProductById);
 userRoutes.post('/', upload.single('img'), postProduct);
+userRoutes.patch('/:id', upload.single('img'), updateProduct);
 userRoutes.delete('/', deleteProduct);
 userRoutes.get('/search/:category/:name', searchProduct);
 

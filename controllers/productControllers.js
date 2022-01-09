@@ -1,5 +1,5 @@
 const Product = require('../models/Product');
-const multer = require('multer');
+
 const fs = require('fs');
 const { urlencoded } = require('express');
 
@@ -62,9 +62,9 @@ const deleteProduct = (req, res) => {
 const postProduct = (req, res, next) => {
 	const { name, description, price, category } = req.body;
 
-	console.log(req.body), console.log(req.file);
-	img = req.file.originalname;
-	console.log('replaced', img.replace(/"&nbsp"/g, '_'));
+	// console.log(req.body), console.log(req.file);
+	img = req.file.originalname.replace(/\s/g, '_');
+
 	let newProduct = new Product({
 		name,
 		description,
@@ -93,22 +93,21 @@ const postProduct = (req, res, next) => {
 			.catch((err) => res.status(400).json({ Error: 'error' }));
 	}
 };
-//multer test
-// const postProduct = (req, res) => {
-// 	const { name, description, price, img, category } = req.body;
 
-// 	let newProduct = new Product({
-// 		name,
-// 		description,
-// 		price,
-// 		img,
-// 		category,
-// 	});
-// 	newProduct
-// 		.save()
-// 		.then(() => res.json({ msg: `nuevo producto  ${newProduct}` }))
-// 		.catch((err) => res.status(400).json({ Error: 'error' }));
-// };
+const updateProduct = (req, res) => {
+	const { name, description, price, category } = req.body;
+	img = req.file.originalname.replace(/\s/g, '_');
+	Product.findOneAndUpdate(
+		{ _id: req.params.id },
+		{ name, description, price, category, img },
+		{ new: true },
+		(err, data) => {
+			err
+				? res.json({ error: 'ha ocurrido un error' })
+				: res.json({ msg: 'datos actualizados', data: data });
+		}
+	);
+};
 // post products
 module.exports = {
 	getProducts,
@@ -119,4 +118,5 @@ module.exports = {
 	getCategories,
 	searchProductsByCategory,
 	deleteProduct,
+	updateProduct,
 };
