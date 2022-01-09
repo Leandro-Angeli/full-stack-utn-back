@@ -50,7 +50,7 @@ const searchProductsByCategory = (req, res) => {
 //get products
 // post products
 const deleteProduct = (req, res) => {
-	const id = req.body.id;
+	const id = req.params.id;
 	Product.findByIdAndDelete(id)
 		.then((res) => console.log('ok'), res.json({ msg: 'producto eliminado' }))
 		.catch(

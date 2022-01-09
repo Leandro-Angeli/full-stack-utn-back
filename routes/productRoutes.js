@@ -23,7 +23,7 @@ userRoutes.get('/categories', getCategories);
 userRoutes.get('/product/:id', getProductById);
 userRoutes.post('/', upload.single('img'), postProduct);
 userRoutes.patch('/:id', upload.single('img'), updateProduct);
-userRoutes.delete('/', deleteProduct);
+userRoutes.delete('/:id', deleteProduct);
 userRoutes.get('/search/:category/:name', searchProduct);
 
 module.exports = userRoutes;
