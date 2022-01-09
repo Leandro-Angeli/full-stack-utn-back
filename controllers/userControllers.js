@@ -106,4 +106,30 @@ const deleteUser = (req, res) => {
 		.catch((err) => res.json({ error: 'ha ocurrido un error' }));
 };
 //deleteUser
-module.exports = { getUser, postUser, loginUser, logOutUser, deleteUser };
+const updateUser = (req, res) => {
+	const { name, last_name, email, phone, password } = req.body;
+	User.findOneAndUpdate(
+		{ _id: req.params.id },
+		{
+			name,
+			last_name,
+			email,
+			phone,
+			password,
+		},
+		{ new: true },
+		(err, data) => {
+			err
+				? res.json({ error: 'ha ocurrido un error' })
+				: res.json({ msg: 'datos actualizados', data: data });
+		}
+	);
+};
+module.exports = {
+	getUser,
+	postUser,
+	loginUser,
+	logOutUser,
+	deleteUser,
+	updateUser,
+};

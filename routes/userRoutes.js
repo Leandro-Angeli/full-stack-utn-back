@@ -6,10 +6,12 @@ const {
 	loginUser,
 	logOutUser,
 	deleteUser,
+	updateUser,
 } = require('../controllers/userControllers');
 userRoutes.get('/', getUser);
 
 userRoutes.post('/', postUser);
+userRoutes.patch('/:id', updateUser);
 userRoutes.post('/login', loginUser);
 userRoutes.post('/logout', logOutUser);
 userRoutes.delete('/:id', deleteUser);
