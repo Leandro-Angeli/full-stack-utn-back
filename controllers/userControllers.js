@@ -6,7 +6,7 @@ const getUser = async (req, res) => {
 	try {
 		const users = await User.find();
 		res.json(users);
-		console.log(users.length);
+		// console.log(users.length);
 	} catch (err) {
 		res.json({ err: 'error' });
 	}
@@ -99,11 +99,13 @@ const logOutUser = async (req, res) => {
 
 //deleteUser
 const deleteUser = (req, res) => {
-	User.findByIdAndDelete(req.params.id)
-		.then((data) => {
-			res.json({ msg: `usuario ${data.name} ${data.last_name}  eliminado` });
-		})
-		.catch((err) => res.json({ error: 'ha ocurrido un error' }));
+	User.findOneAndDelete({ _id: req.params.id }, (err, docs) => {
+		if (err) {
+			res.json({ error: ' ha ocurrido un error' });
+		} else {
+			res.json({ msg: 'usuario eliminado' });
+		}
+	});
 };
 //deleteUser
 const updateUser = (req, res) => {

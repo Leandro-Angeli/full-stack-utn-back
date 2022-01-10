@@ -5,7 +5,7 @@ const { urlencoded } = require('express');
 
 //get products
 const getProducts = (req, res) => {
-	console.log(req.params);
+	// console.log(req.params);
 	Product.find()
 		.then((data) => res.json(data))
 		.catch((err) => res.json(err));
@@ -23,7 +23,7 @@ const getCategories = (req, res) => {
 			data = filterData.filter((i, p) => {
 				return filterData.indexOf(i) == p;
 			});
-			console.log(filterData);
+			// console.log(filterData);
 			res.json(data);
 		})
 		.catch((err) => res.json(err));
@@ -50,56 +50,44 @@ const searchProductsByCategory = (req, res) => {
 //get products
 // post products
 const deleteProduct = (req, res) => {
-	const id = req.params.id;
-	Product.findByIdAndDelete(id)
-		.then((res) => console.log('ok'), res.json({ msg: 'producto eliminado' }))
-		.catch(
-			(err) => console.log('error'),
-			res.json({ error: ' ha ocurrido un error' })
-		);
+	Product.findOneAndDelete({ _id: req.params.id }, (err, docs) => {
+		if (err) {
+			res.json({ error: ' ha ocurrido un error' });
+		} else {
+			res.json({ msg: 'producto eliminado' });
+		}
+	});
+	// .then((res) => res.json({ msg: 'producto eliminado' }))
+	// .catch((err) => res.json({ error: ' ha ocurrido un error' }));
 };
 
 const postProduct = (req, res, next) => {
 	const { name, description, price, category } = req.body;
 
-	// console.log(req.body), console.log(req.file);
-	img = req.file.originalname.replace(/\s/g, '_');
-
 	let newProduct = new Product({
 		name,
 		description,
 		price,
-		img,
+
 		category,
 	});
-	const extensionFile = req.file.mimetype.split('/')[1];
-	console.log(extensionFile);
-	if (
-		extensionFile != 'jpg' &&
-		extensionFile != 'jpeg' &&
-		extensionFile != 'png' &&
-		extensionFile != 'svg'
-	) {
-		res.send('solo se admiten imagenes');
-	} else {
-		newProduct
-			.save()
-			.then(() => {
-				res.json({
-					msg: `nuevo producto  ${newProduct}`,
-					req: { body: req.body, files: req.file },
-				});
-			})
-			.catch((err) => res.status(400).json({ Error: 'error' }));
-	}
+
+	newProduct
+		.save()
+		.then(() => {
+			res.json({
+				msg: `nuevo producto  ${newProduct.name}`,
+			});
+		})
+		.catch((err) => res.status(400).json({ Error: 'error' }));
 };
 
 const updateProduct = (req, res) => {
 	const { name, description, price, category } = req.body;
-	img = req.file.originalname.replace(/\s/g, '_');
+
 	Product.findOneAndUpdate(
 		{ _id: req.params.id },
-		{ name, description, price, category, img },
+		{ name, description, price, category },
 		{ new: true },
 		(err, data) => {
 			err

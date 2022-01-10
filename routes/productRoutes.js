@@ -21,8 +21,8 @@ userRoutes.get(
 );
 userRoutes.get('/categories', getCategories);
 userRoutes.get('/product/:id', getProductById);
-userRoutes.post('/', upload.single('img'), postProduct);
-userRoutes.patch('/:id', upload.single('img'), updateProduct);
+userRoutes.post('/', postProduct);
+userRoutes.patch('/patch/:id', updateProduct);
 userRoutes.delete('/:id', deleteProduct);
 userRoutes.get('/search/:category/:name', searchProduct);
 
