@@ -78,15 +78,15 @@ const loginUser = async (req, res) => {
 			});
 			// console.log(token);
 			//RES COOKI GOES FIRST THEN RES.JSON//
-			res.cookie('jwt', token, {
-				expires: new Date(Date.now() + 60000),
-				// secure:true,
-				// httpOnly:true
-			});
-			res.json({ usuario: user, token: token });
+			// res.cookie('jwt', token, {
+			// 	expires: new Date(Date.now() + 60000),
+			// 	// secure:true,
+			// 	// httpOnly:true
+			// });
+			res.json({ msg: ` ${user.name} autenticado`, token: token });
 			//RES COOKI GOES FIRST THEN RES.JSON//
-		} else {
-			res.json({ error: 'datos incorrectos', token: 'null' });
+		} else if (!isMatch) {
+			res.json({ error: 'datos incorrectos' });
 		}
 	}
 };
